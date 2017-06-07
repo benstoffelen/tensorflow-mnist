@@ -1,45 +1,49 @@
 import numpy as np
+import nltk.data
 import tensorflow as tf
+from tensorflow.contrib import learn
 from flask import Flask, jsonify, render_template, request
 
-from mnist import model
+def evaluate(input):
+    vocab_path = 'mnist/data/vocab'
+    vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
+    x_test = np.array(list(vocab_processor.transform(input)))
 
+    graph = tf.Graph()
+    with graph.as_default():
+        session_conf = tf.ConfigProto(
+            allow_soft_placement=True,
+            log_device_placement=False)
+        sess = tf.Session(config=session_conf)
+        with sess.as_default():
+            # Load the saved meta graph and restore variables
+            saver = tf.train.import_meta_graph('mnist/data/model-2000.meta')
+            checkpoint_file = tf.train.latest_checkpoint('mnist/data/')
+            saver.restore(sess, checkpoint_file)
 
-x = tf.placeholder("float", [None, 784])
-sess = tf.Session()
+            # Get the placeholders from the graph by name
+            input_x = graph.get_operation_by_name("input_x").outputs[0]
+            # input_y = graph.get_operation_by_name("input_y").outputs[0]
+            dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
 
-# restore trained data
-with tf.variable_scope("regression"):
-    y1, variables = model.regression(x)
-saver = tf.train.Saver(variables)
-saver.restore(sess, "mnist/data/regression.ckpt")
+            # Tensors we want to evaluate
+            predictions = graph.get_operation_by_name("output/predictions").outputs[0]
 
+            #evaluate
+            prediction = sess.run(predictions, {input_x: x_test, dropout_keep_prob: 1.0})
 
-with tf.variable_scope("convolutional"):
-    keep_prob = tf.placeholder("float")
-    y2, variables = model.convolutional(x, keep_prob)
-saver = tf.train.Saver(variables)
-saver.restore(sess, "mnist/data/convolutional.ckpt")
-
-
-def regression(input):
-    return sess.run(y1, feed_dict={x: input}).flatten().tolist()
-
-
-def convolutional(input):
-    return sess.run(y2, feed_dict={x: input, keep_prob: 1.0}).flatten().tolist()
-
+            return prediction
 
 # webapp
 app = Flask(__name__)
 
 
-@app.route('/api/mnist', methods=['POST'])
-def mnist():
-    input = ((255 - np.array(request.json, dtype=np.uint8)) / 255.0).reshape(1, 784)
-    output1 = regression(input)
-    output2 = convolutional(input)
-    return jsonify(results=[output1, output2])
+@app.route('/api/evaluate', methods=['POST'])
+def evaluate_api():
+    input = request.form['input']
+    tokenizer = nltk.data.load('tokenizers/punkt/german.pickle')
+    sentences = tokenizer.tokenize(input)
+    return evaluate(sentences)
 
 
 @app.route('/')
