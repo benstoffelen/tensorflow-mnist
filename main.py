@@ -10,18 +10,23 @@ predictions = None
 input_x = None
 dropout_keep_prob = None
 
+
+# Evaluation Method
 def evaluate(input):
     # evaluate
-    vocab_path = os.path.join('C:\\Users\\anwender\\PycharmProjects\\tensorflow-mnist\\mnist\\data\\vocab')
+    vocab_path = os.path.join(app.root_path, 'mnist','data','vocab')
     vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
     x_test = np.array(list(vocab_processor.transform(input)))
 
     prediction = sess.run(predictions, {input_x: x_test, dropout_keep_prob: 1.0})
     return prediction.tolist()
 
+
 # webapp
 app = Flask(__name__)
+print()
 
+# set up the model before the app accecpts requests.
 @app.before_first_request
 def _run_on_start():
     graph = tf.Graph()
@@ -33,10 +38,8 @@ def _run_on_start():
         sess = tf.Session(config=session_conf)
         with sess.as_default():
             # Load the saved meta graph and restore variables
-            saver = tf.train.import_meta_graph(
-                'C:\\Users\\anwender\\PycharmProjects\\tensorflow-mnist\\mnist\\data\\model-2000.meta')
-            checkpoint_file = tf.train.latest_checkpoint(
-                'C:\\Users\\anwender\\PycharmProjects\\tensorflow-mnist\\mnist\\data\\')
+            checkpoint_file = tf.train.latest_checkpoint(os.path.join(app.root_path, 'mnist','data'))
+            saver = tf.train.import_meta_graph("{}.meta".format(checkpoint_file))
             saver.restore(sess, checkpoint_file)
 
             # Get the placeholders from the graph by name
@@ -48,6 +51,7 @@ def _run_on_start():
             # Tensors we want to evaluate
             global predictions
             predictions = graph.get_operation_by_name("output/predictions").outputs[0]
+
 
 @app.route('/api/evaluate', methods=['POST'])
 def evaluate_api():
@@ -73,3 +77,4 @@ def main():
 
 if __name__ == '__main__':
     app.run()
+

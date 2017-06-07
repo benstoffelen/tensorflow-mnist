@@ -16,16 +16,16 @@
 <div class="container">
     <h1>Sentence Sentiment Tester</h1>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-sm-6">
             <form action="{{ url_for('evaluate_api') }}" method="post">
                 <div class="form-group">
                     <label for="comment">Input:</label>
                     <textarea class="form-control" rows="15" id="input" name="input">{{ original_text }}</textarea>
                 </div>
-                <input type="submit">
+                <button type="submit" class="btn btn-default">Submit</button>
             </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-sm-6">
             <label>Output:</label>
             <ul>
                 {% for entry in output %}
