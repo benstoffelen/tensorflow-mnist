@@ -1,6 +1,2 @@
-model_checkpoint_path: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-2000"
-all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-1600"
-all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-1700"
-all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-1800"
-all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-1900"
-all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\cnn-text-classification-tf\\runs\\1496838312\\checkpoints\\model-2000"
+model_checkpoint_path: "C:\\Users\\anwender\\PycharmProjects\\tensorflow-mnist\\mnist\\data\\model-2000"
+all_model_checkpoint_paths: "C:\\Users\\anwender\\PycharmProjects\\tensorflow-mnist\\mnist\\data\\model-2000"

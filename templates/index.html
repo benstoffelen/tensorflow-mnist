@@ -2,24 +2,36 @@
 <html>
 <head>
     <title>Sentiment Tester</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="container">
-    <h1>Sentiment Tester</h1>
+    <h1>Sentence Sentiment Tester</h1>
     <div class="row">
         <div class="col-md-6">
             <form action="{{ url_for('evaluate_api') }}" method="post">
                 <div class="form-group">
-                    <label for="comment">Comment:</label>
-                    <textarea class="form-control" rows="5" id="input" name="input"></textarea>
+                    <label for="comment">Input:</label>
+                    <textarea class="form-control" rows="15" id="input" name="input">{{ original_text }}</textarea>
                 </div>
                 <input type="submit">
             </form>
         </div>
         <div class="col-md-6">
-            <p>output:</p>
+            <label>Output:</label>
+            <ul>
+                {% for entry in output %}
+                    <li>{{ entry[0] }} : <strong>{{ entry[1] }}</strong></li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
